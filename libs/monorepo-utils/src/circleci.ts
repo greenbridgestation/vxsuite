@@ -174,11 +174,13 @@ function generateNotifyGalleryJob(): string[] {
 
 // Rust crates are split across independent Cargo workspaces:
 // - Root workspace (daemons/logging): Cargo.toml
+// - ballot-encoder: libs/ballot-encoder/Cargo.toml (types-rs is a path dep)
 // - ballot-interpreter: libs/ballot-interpreter/Cargo.toml (types-rs is a path dep)
 // - types-rs: libs/types-rs/Cargo.toml
 // - pdi-scanner: libs/pdi-scanner/Cargo.toml
 const RUST_WORKSPACE_DIRS = [
   '.',
+  'libs/ballot-encoder',
   'libs/ballot-interpreter',
   'libs/types-rs',
   'libs/pdi-scanner',
@@ -341,14 +343,14 @@ function generateCircleCiFilteredAppConfigForPackage(
     '      - restore_cache:',
     '          name: Restore Cargo Cache',
     '          key:',
-    '            cargo-cache-{{ checksum ".circleci/config.yml" }}-{{ checksum "Cargo.lock" }}-{{ checksum "libs/ballot-interpreter/Cargo.lock" }}-{{ checksum "libs/pdi-scanner/Cargo.lock" }}',
+    '            cargo-cache-{{ checksum ".circleci/config.yml" }}-{{ checksum "Cargo.lock" }}-{{ checksum "libs/ballot-encoder/Cargo.lock" }}-{{ checksum "libs/ballot-interpreter/Cargo.lock" }}-{{ checksum "libs/pdi-scanner/Cargo.lock" }}',
     '      - run:',
     '          name: Install Rust Dependencies',
     '          command: pnpm --recursive install:rust-addon',
     '      - save_cache:',
     '          name: Save Cargo Cache',
     '          key:',
-    '            cargo-cache-{{ checksum ".circleci/config.yml" }}-{{ checksum "Cargo.lock" }}-{{ checksum "libs/ballot-interpreter/Cargo.lock" }}-{{ checksum "libs/pdi-scanner/Cargo.lock" }}',
+    '            cargo-cache-{{ checksum ".circleci/config.yml" }}-{{ checksum "Cargo.lock" }}-{{ checksum "libs/ballot-encoder/Cargo.lock" }}-{{ checksum "libs/ballot-interpreter/Cargo.lock" }}-{{ checksum "libs/pdi-scanner/Cargo.lock" }}',
     '          paths:',
     '            - /root/.cargo',
     '',
@@ -578,14 +580,14 @@ commands:
       - restore_cache:
           name: Restore Cargo Cache
           key:
-            cargo-cache-{{ checksum ".circleci/config.yml" }}-{{ checksum "Cargo.lock" }}-{{ checksum "libs/ballot-interpreter/Cargo.lock" }}-{{ checksum "libs/pdi-scanner/Cargo.lock" }}
+            cargo-cache-{{ checksum ".circleci/config.yml" }}-{{ checksum "Cargo.lock" }}-{{ checksum "libs/ballot-encoder/Cargo.lock" }}-{{ checksum "libs/ballot-interpreter/Cargo.lock" }}-{{ checksum "libs/pdi-scanner/Cargo.lock" }}
       - run:
           name: Install Rust Dependencies
           command: pnpm --recursive install:rust-addon
       - save_cache:
           name: Save Cargo Cache
           key:
-            cargo-cache-{{ checksum ".circleci/config.yml" }}-{{ checksum "Cargo.lock" }}-{{ checksum "libs/ballot-interpreter/Cargo.lock" }}-{{ checksum "libs/pdi-scanner/Cargo.lock" }}
+            cargo-cache-{{ checksum ".circleci/config.yml" }}-{{ checksum "Cargo.lock" }}-{{ checksum "libs/ballot-encoder/Cargo.lock" }}-{{ checksum "libs/ballot-interpreter/Cargo.lock" }}-{{ checksum "libs/pdi-scanner/Cargo.lock" }}
           paths:
             - /root/.cargo
 `.trim();
