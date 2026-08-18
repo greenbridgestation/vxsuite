@@ -23,14 +23,14 @@
   "devDependencies": {
     "@napi-rs/cli": "^3.5.1",
     "@types/tmp": "0.2.4",
-    "@vitest/coverage-istanbul": "^4.1.6",
+    "@vitest/coverage-istanbul": "5.0.0-rc.2",
     "@votingworks/fixtures": "workspace:*",
     "@votingworks/logging": "workspace:*",
     "@votingworks/test-utils": "workspace:*",
     "@votingworks/types": "workspace:*",
     "eslint-plugin-vx": "workspace:*",
     "tmp": "^0.2.6",
-    "vitest": "^4.1.6"
+    "vitest": "5.0.0-rc.2"
   },
   "napi": {
     "binaryName": "logging-utils",

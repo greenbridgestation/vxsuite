@@ -10,8 +10,8 @@
     "bin"
   ],
   "scripts": {
-    "benchmark": "bin/run-benchmarks ${BENCH_ENV:-default}",
-    "benchmark:compare": "vitest bench --compare bench-results/${BENCH_ENV:-default}.json",
+    "benchmark": "BENCH_RECORD=1 vitest bench",
+    "benchmark:compare": "vitest bench",
     "build": "pnpm -w vx-task build $npm_package_name",
     "build:self": "tsc --build tsconfig.build.json && cp -R ./src/fonts ./build",
     "clean": "pnpm -w vx-task clean $npm_package_name",
@@ -57,7 +57,7 @@
     "@types/react-dom": "18.3.0",
     "@types/styled-components": "^5.1.26",
     "@types/tmp": "0.2.4",
-    "@vitest/coverage-istanbul": "^4.1.6",
+    "@vitest/coverage-istanbul": "5.0.0-rc.2",
     "@votingworks/monorepo-utils": "workspace:*",
     "@votingworks/test-utils": "workspace:*",
     "esbuild": "0.28.1",
@@ -68,7 +68,7 @@
     "sort-package-json": "^1.50.0",
     "util": "^0.12.4",
     "vite": "8.0.16",
-    "vitest": "^4.1.6"
+    "vitest": "5.0.0-rc.2"
   },
   "packageManager": "pnpm@10.34.5"
 }

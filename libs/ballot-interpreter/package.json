@@ -54,7 +54,7 @@
     "@types/node": "24.13.3",
     "@types/node-quirc": "workspace:*",
     "@types/tmp": "0.2.4",
-    "@vitest/coverage-istanbul": "^4.1.6",
+    "@vitest/coverage-istanbul": "5.0.0-rc.2",
     "@votingworks/bmd-ballot-fixtures": "workspace:*",
     "@votingworks/fixtures": "workspace:*",
     "@votingworks/fs": "workspace:*",
@@ -66,7 +66,7 @@
     "fs-extra": "11.1.1",
     "jest-image-snapshot": "^6.4.0",
     "sort-package-json": "^1.50.0",
-    "vitest": "^4.1.6"
+    "vitest": "5.0.0-rc.2"
   },
   "napi": {
     "binaryName": "ballot-interpreter",
