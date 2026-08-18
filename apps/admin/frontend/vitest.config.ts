@@ -12,7 +12,7 @@ export default defineConfig({
         branches: -107,
       },
       exclude: [
-        'src/config',
+        'src/config/**',
         'src/**/*.d.ts',
         'src/index.tsx',
         'src/stubs/*',
