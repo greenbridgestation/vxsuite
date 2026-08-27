@@ -1,6 +1,7 @@
 import { dirname } from 'node:path';
 import { mkdir, rm } from 'node:fs/promises';
 import { err, extractErrorMessage, ok, Result } from '@votingworks/basics';
+import { LogEventId } from '@votingworks/logging';
 import { generateElectionBasedSubfolderName } from '@votingworks/utils';
 import { prepare, PrepareError } from './prepare_step.js';
 import { PrepareBackupOptions } from './types.js';
@@ -51,6 +52,33 @@ export interface CreatedBackup {
  * database, ballot images, and election packages.
  */
 export async function createBackup(
+  options: PrepareBackupOptions
+): Promise<Result<CreatedBackup, CreateBackupError>> {
+  const { logger } = options;
+  logger.log(LogEventId.BackupCreateInit, 'system', {
+    message: `Creating a backup at ${options.target}...`,
+  });
+
+  const result = await tryCreateBackup(options);
+
+  if (result.isOk()) {
+    logger.log(LogEventId.BackupCreateComplete, 'system', {
+      disposition: 'success',
+      message: `Backup created successfully at ${result.ok().path}.`,
+    });
+  } else {
+    const error = result.err();
+    logger.log(LogEventId.BackupCreateComplete, 'system', {
+      disposition: 'failure',
+      errorType: error.type,
+      message: `Failed to create backup: ${error.message}`,
+    });
+  }
+
+  return result;
+}
+
+async function tryCreateBackup(
   options: PrepareBackupOptions
 ): Promise<Result<CreatedBackup, CreateBackupError>> {
   const prepareResult = await prepare(options);
