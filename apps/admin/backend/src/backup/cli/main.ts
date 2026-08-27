@@ -1,8 +1,6 @@
 import assert from 'node:assert';
 import { relative } from 'node:path';
-import { inspect } from 'node:util';
 import yargs from 'yargs';
-import { extractErrorMessage } from '@votingworks/basics';
 import { FileSystemEntryType, listDirectoryRecursive } from '@votingworks/fs';
 import { BaseLogger, LogSource } from '@votingworks/logging';
 import { getNodeEnv } from '@votingworks/backend';
@@ -10,9 +8,11 @@ import { BackupRoot } from '../backup_root.js';
 import { StyledPrinter } from './styled_printer.js';
 import { DisplayProgress, ProgressDisplay } from './progress_display.js';
 import * as views from './views.js';
-import { Backup } from '../backup.js';
+import { inspect } from 'node:util';
 import { ProgressEvent } from '../progress.js';
 import { createBackup } from '../create/index.js';
+import { Backup } from '../backup.js';
+import { BackupManifestFile } from '../backup_manifest_file.js';
 
 /**
  * IO streams given to the CLI.
@@ -271,11 +271,21 @@ async function list(
   let printedBackup = false;
 
   for (const backup of backups) {
-    const readManifestResult = await backup.manifestFile.readManifest();
+    const openBackupResult = await backup.open();
+    if (openBackupResult.isErr()) {
+      views.unreadableManifest(errorPrinter, {
+        manifestPath: backup.manifestPath,
+        error: openBackupResult.err().message,
+      });
+      continue;
+    }
+
+    await using authenticatedBackup = openBackupResult.ok();
+    const readManifestResult = await authenticatedBackup.readManifest();
     if (readManifestResult.isErr()) {
       views.unreadableManifest(errorPrinter, {
-        manifestPath: backup.manifestFile.path,
-        error: readManifestResult.err(),
+        manifestPath: backup.manifestPath,
+        error: readManifestResult.err().message,
       });
       continue;
     }
@@ -306,13 +316,15 @@ async function restore(
   stderr.write('NOT IMPLEMENTED YET.\n');
 
   const backup = new Backup(args.backup);
-  const readManifestResult = await backup.manifestFile.readManifest();
+  const readManifestResult = await new BackupManifestFile(
+    backup.manifestPath
+  ).readManifest();
 
   if (readManifestResult.isErr()) {
     stderr.write(
-      `Error: unable to read manifest at ${
-        backup.manifestFile.path
-      }: ${extractErrorMessage(readManifestResult.err())}`
+      `Error: unable to read manifest at ${backup.manifestPath}: ${
+        readManifestResult.err().message
+      }`
     );
     return 1;
   }
