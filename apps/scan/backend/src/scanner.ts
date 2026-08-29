@@ -57,6 +57,7 @@ import { Workspace } from './util/workspace.js';
 import { constructAuthMachineState } from './util/auth.js';
 import { Store } from './store.js';
 import { encryptBallotAuditId } from './export.js';
+import { emitVoteProofCvr } from './voteproofEmit.js';
 
 const debug = rootDebug.extend('state-machine');
 
@@ -158,6 +159,10 @@ export async function recordScannedSheet({
       acceptedOrRejected,
       logger
     );
+  }
+
+  if (isAccepted) {
+    await emitVoteProofCvr({ store, sheetId, logger });
   }
 
   debug('Stored %s sheet: %s', acceptedOrRejected, sheetId);
